@@ -1,19 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 function App() {
 
   const [files, setFiles] = useState([])
+  const [allFiles, setAllFiles] = useState([])
   const [printFiles, setPrintFiles] = useState(false)
   const [existingFilenames, setExistingFilenames] = useState([])
+  const fileInputRef = useRef(null)
+
 
   const onDrop = (acceptedFiles) => {
     const newFiles = acceptedFiles.filter((file) => !existingFilenames.includes(file.name))
-  
+
     setFiles((prevFiles) => [...prevFiles, ...newFiles])
-  
+
     const newFilenames = newFiles.map((file) => file.name)
     setExistingFilenames((prevFilenames) => [...prevFilenames, ...newFilenames])
+
+    const refs = Array.from(fileInputRef.current.files)
+    const uniqueNewFiles = refs.filter((ref) => !files.some((f) => f.name == ref.name))
+
+    const allSelectedFiles = Array.from(new Set([...uniqueNewFiles, ...files]))
+    setAllFiles(allSelectedFiles)
   }
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
@@ -24,37 +33,58 @@ function App() {
   }
 
   const handleSendData = (e) => {
-    setPrintFiles(e.target.checked);
+    setPrintFiles(e.target.checked)
   }
+
+  const handleClickButton = (e) => {
+    e.stopPropagation()
+    fileInputRef.current.click()
+  }
+
+  useEffect(() => {
+    console.log(allFiles);
+  }, [allFiles])
 
   return (
     <>
       <div className='container'>
-        <div  {...getRootProps()} className='dropZone'>
+        <div {...getRootProps()} className='dropZone'>
+          <input
+            {...getInputProps()}
+            style={{ display: 'none' }}
+            ref={fileInputRef}
+          />
           <ul>
             {files.map(file => (
-              <li onClick={(e) => e.stopPropagation()}>
-                <div className='close' onClick={() => handleCloseFile(file.name)}></div>
+              <li key={file.name} onClick={(e) => e.stopPropagation()} >
+                <div className='close' onClick={() => handleCloseFile(file.name)}>×</div>
                 <img src={URL.createObjectURL(file)} alt={file.name} />
               </li>
             ))}
           </ul>
           {files.length == 0 ? <p>Drag & Drop</p> : null}
         </div>
-        <div className='switchRow'>
-          <label class="switch">
-            <input type="checkbox" onChange={handleSendData} />
-            <span class="slider round"></span>
-          </label>
+        <div className='btnWrapper'>
+          <input
+            type='button'
+            value='Files'
+            className='customButton'
+            onClick={(e) => handleClickButton(e)}
+          />
+          <div className='switchRow'>
+            <label className="switch">
+              <input type="checkbox" onChange={handleSendData} />
+              <span className="slider round"></span>
+            </label>
+          </div>
         </div>
       </div>
 
-      {
-        printFiles &&
+      {printFiles && (
         <div className='table'>
-          <table >
+          <table>
             <thead>
-              <tr >
+              <tr>
                 <th>Name</th>
                 <th>Type</th>
                 <th>Size</th>
@@ -62,7 +92,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {files.map((file) => (
+              {allFiles.map((file) => (
                 <tr>
                   <td>{file.name}</td>
                   <td>{file.type}</td>
@@ -73,9 +103,9 @@ function App() {
             </tbody>
           </table>
         </div>
-      }
-
+      )}
     </>
-  );
-}
+  )
+};
+
 export default App;

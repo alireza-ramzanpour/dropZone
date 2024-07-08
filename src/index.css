@@ -82,15 +82,19 @@ li img {
   -moz-border-radius: 50%;
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
-  background-image: url(./assets/images/Red_X.svg.png);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   position: absolute;
   top: 2%;
   right: 2%;
   border: none;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+  box-sizing: border-box;
+  padding-bottom: 3px;
 }
 
 .close:hover {
@@ -100,6 +104,34 @@ li img {
   -moz-transition: all 400ms ease;
   -ms-transition: all 400ms ease;
   -o-transition: all 400ms ease;
+}
+
+
+/* buttons Style */
+
+.btnWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.customButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.customButton:hover {
+  background-color: #45a049;
 }
 
 
