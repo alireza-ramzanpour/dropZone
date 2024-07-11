@@ -50,10 +50,12 @@ function App() {
       <div className='container'>
         <div {...getRootProps()} className='dropZone'>
           <input
+            type='file'
             {...getInputProps()}
-            style={{ display: 'none' }}
+            style={{ display: 'block' }}
             ref={fileInputRef}
           />
+          <p>{files.length} file(s) selected</p>
           <ul>
             {files.map(file => (
               <li key={file.name} onClick={(e) => e.stopPropagation()} >
